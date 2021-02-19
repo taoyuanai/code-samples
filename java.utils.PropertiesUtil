@@ -1,0 +1,40 @@
+package com.xxx.utils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+public class PropertiesUtil {
+
+    private static Map<String, Properties> cache = new HashMap<String, Properties>();
+
+    /**
+     *
+     * @param configFileName 配置文件名
+     * @param key  配置文件中的 key=value  中的key
+     * @return
+     */
+    public static String get(String configFileName,String key){
+        return getProperties(configFileName).getProperty(key);
+    }
+
+    public static Properties getProperties(String configFileName) {
+        //查询缓存中是否有此配置文件
+        if(cache.get(configFileName)!=null){
+            return cache.get(configFileName);
+        }
+        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(configFileName);
+        Properties properties = new Properties();
+        try {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        cache.put(configFileName,properties);
+        return  properties;
+    }
+
+}
